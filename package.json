@@ -16,6 +16,7 @@
   "scripts": {
     "build": "tsc",
     "start": "probot run ./lib/index.js",
+    "dev": "nodemon --exec \"npm run build && npm start\"",
     "test": "jest"
   },
   "dependencies": {
@@ -29,6 +30,7 @@
     "eslint-plugin-typescript": "^0.14.0",
     "jest": "^26.4.0",
     "nock": "^13.0.4",
+    "nodemon": "^2.0.5",
     "smee-client": "^1.1.0",
     "ts-jest": "^26.2.0",
     "typescript": "^3.9.7"
