@@ -19,7 +19,7 @@ export const mondayClient = async (query: string, variables?: any): Promise<Resp
   }).then((res) => res.json());
 
   if (response.error) {
-    throw new Error(response.error?.message);
+    throw new Error(response.error.message);
   }
 
   return response;

@@ -9,23 +9,23 @@ const WORKSPACE_URL = process.env['MONDAY_WORKSPACE_URL'] || '';
 const updateItemStatus = async (context: Context, parsedResult: ParsedResult, status: string) => {
   const columnsResponse = await mondayClient(getColumns, { board_ids: [parsedResult.board_id] });
 
-  const columns: [Column] = columnsResponse.data.boards.columns;
+  const columns: [Column] = columnsResponse.data.boards[0].columns;
   const codeReviewColumn = columns.find((column) => column.title.toLocaleLowerCase() === 'status');
 
-  await mondayClient(changeItemStatus, {
+  const updateResponse = await mondayClient(changeItemStatus, {
     ...parsedResult,
     column_id: codeReviewColumn?.id,
     value: status,
   });
 
+  if (updateResponse.error) {
+    throw new Error(updateResponse.error.message);
+  }
+
   const boardLink = `${WORKSPACE_URL}/boards/${parsedResult.board_id}`;
   const itemLink = `${boardLink}/pulses/${parsedResult.item_id}`;
   const issueComment = context.issue({
-    body: `
-      This PR is linked to (Task ${parsedResult.item_id})[${itemLink}] on 
-      (Board ${parsedResult.board_id})[${boardLink}] and has now been put 
-      into Code Review status
-    `,
+    body: `This PR is linked to [Task ${parsedResult.item_id}](${itemLink}) on [Board ${parsedResult.board_id}](${boardLink}) and has now been put into Code Review status!`,
   });
   await context.github.issues.createComment(issueComment);
 };
