@@ -13,6 +13,9 @@ npm run build
 
 # Run
 npm run start
+
+# Dev
+npm run dev
 ```
 
 ## Docker
