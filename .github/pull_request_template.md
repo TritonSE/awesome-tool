@@ -1,5 +1,5 @@
 ### Info
-Monday Board ID: https://triton-software-engineering.monday.com/boards/785685546/
+Monday Board ID: 785685546
 Monday Item ID: 
 
 ### Changes

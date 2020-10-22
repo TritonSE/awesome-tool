@@ -1,6 +1,6 @@
 # awesome-tool
 
-> A GitHub App built with [Probot](https://github.com/probot/probot) that A bot that automates the process of synchronizing and managing GitHub PRs with Monday.com Tasks
+> A GitHub App built with [Probot](https://github.com/probot/probot) that automates the process of synchronizing and managing GitHub PRs with Monday.com tasks
 
 ## Setup
 
@@ -13,6 +13,12 @@ npm run build
 
 # Run
 npm run start
+
+# Dev
+npm run dev
+
+# lint
+npm run lint
 ```
 
 ## Docker
