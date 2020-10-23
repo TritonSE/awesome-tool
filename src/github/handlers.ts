@@ -34,8 +34,8 @@ export const prHandler = async (context: Context) => {
   try {
     const { changes, pull_request: pullRequest } = context.payload;
 
-    // if the pull request's body is edited
-    if (changes && changes.body) {
+    // pull_request.edited: if the pull request's body is not edited, return early
+    if (changes && !changes.body) {
       return;
     }
 
