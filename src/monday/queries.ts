@@ -1,10 +1,11 @@
-export const getColumns = `
-  query getColumns($board_ids: [Int]!) {
-    boards(ids: $board_ids) {
-      columns {
+export const getItems = `
+  query getItems($item_ids: [Int]!) {
+    items(ids: $item_ids) {
+      column_values {
         id
         title
         type
+        additional_info
       }
     }
   }
