@@ -1,7 +1,7 @@
 import { Context } from 'probot';
 import { mondayClient } from '../monday/client';
-import { changeItemStatus, getColumns } from '../monday/queries';
-import { Column, ParsedResult } from '../types';
+import { changeItemStatus, getItems } from '../monday/queries';
+import { Column, Item, ParsedResult } from '../types';
 import { parseBody } from './parser';
 
 const APP_URL = process.env['APP_URL'] || '';
@@ -9,20 +9,33 @@ const APP_NAME = process.env['APP_NAME'] || '';
 const WORKSPACE_URL = process.env['MONDAY_WORKSPACE_URL'] || '';
 
 const updateItemStatus = async (context: Context, parsedResult: ParsedResult, status: string) => {
-  const columnsResponse = await mondayClient(getColumns, { board_ids: [parsedResult.board_id] });
+  const itemsResponse = await mondayClient(getItems, { item_ids: [parsedResult.item_id] });
 
-  const columns: [Column] = columnsResponse.data.boards[0].columns;
-  const codeReviewColumn = columns.find((column) => column.title.toLocaleLowerCase() === 'status');
+  if (itemsResponse.data.items.length == 0) {
+    throw new Error('Invalid Monday Task ID!');
+  }
 
-  const updateResponse = await mondayClient(changeItemStatus, {
+  const item: Item = itemsResponse.data.items[0];
+  const statusColumn = item.column_values.find(
+    (column: Column) => column.title.toLocaleLowerCase() === 'status',
+  );
+
+  if (!statusColumn) {
+    console.error('Missing Status Column on Monday Board');
+    throw new Error('Missing Status Column on Monday Board');
+  }
+
+  // If the task is already at the designated status, early return
+  const additional_info = JSON.parse((statusColumn as Column).additional_info);
+  if (additional_info?.label.toLocaleLowerCase() === status.toLocaleLowerCase()) {
+    return;
+  }
+
+  await mondayClient(changeItemStatus, {
     ...parsedResult,
-    column_id: codeReviewColumn?.id,
+    column_id: statusColumn?.id,
     value: status,
   });
-
-  if (updateResponse.error) {
-    throw new Error(updateResponse.error.message);
-  }
 
   const boardLink = `${WORKSPACE_URL}/boards/${parsedResult.board_id}`;
   const itemLink = `${boardLink}/pulses/${parsedResult.item_id}`;
@@ -73,11 +86,11 @@ export const prHandler = async (context: Context) => {
   } catch (error) {
     console.error(error);
 
-    const { pull_request: pullRequest } = context.payload;
     const issueComment = context.issue({
       body: 'Please provide valid Monday.com IDs in description!',
     });
 
+    const { pull_request: pullRequest } = context.payload;
     await context.github.issues.createComment(issueComment);
     await updatePRStatus(context, pullRequest.head.sha, true);
   }

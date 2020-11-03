@@ -2,7 +2,10 @@ import { Application } from 'probot'; // eslint-disable-line @typescript-eslint/
 import { prHandler } from './github/handlers';
 
 export = (app: Application) => {
-  app.on(['pull_request.opened', 'pull_request.edited'], prHandler);
+  app.on(
+    ['pull_request.opened', 'pull_request.edited', 'pull_request.reopened', 'pull_request.closed'],
+    prHandler,
+  );
 
   // For more information on building apps:
   // https://probot.github.io/docs/
