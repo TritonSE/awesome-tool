@@ -1,6 +1,6 @@
 # awesome-tool
 
-> A GitHub App built with [Probot](https://github.com/probot/probot) that automates the process of synchronizing and managing GitHub PRs with Monday.com tasks.
+> A GitHub App built with [Probot](https://github.com/probot/probot) that automates the process of synchronizing and managing GitHub PRs with Monday.com tasks
 
 ## Setup
 
