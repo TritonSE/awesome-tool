@@ -18,8 +18,22 @@ export interface Column {
   additional_info: string;
 }
 
+// Monday Item
 export interface Item {
   id: string;
   name: string;
   column_values: [Column];
+}
+
+// GitHub Branch Info
+export interface Branch {
+  label: string;
+  ref: string;
+  sha: string;
+}
+
+// GitHub Pull Request
+export interface PullRequest {
+  body: string;
+  head: Branch;
 }
