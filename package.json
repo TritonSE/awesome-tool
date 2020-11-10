@@ -2,7 +2,7 @@
   "name": "awesome-tool",
   "version": "1.0.0",
   "private": true,
-  "description": "A bot that automates the process of synchronizing and managing GitHub PRs with Monday.com Tasks",
+  "description": "A bot that automates the process of synchronizing and managing GitHub PRs with Monday.com Items",
   "author": "Arnold Duan <Chengzhu.Duan@gmail.com>",
   "license": "ISC",
   "repository": "https://github.com/TritonSE/awesome-tool.git",

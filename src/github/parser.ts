@@ -1,12 +1,27 @@
-import { ParsedResult } from '../types';
+import { ParsedResult, PullRequest } from '../types';
 
-const regexp = /board\s+id\s*:\s*(?<board_id>[0-9]+)\s*\r\n.*item\s+id\s*:\s*(?<item_id>[0-9]+)/i;
+const boardIdRegexp = /board\s+id\s*:\s*(?<board_id>[0-9]+)/i;
+const itemIdRegexp = /.*\/.*\/(?<item_id>[0-9]+)\-/i;
 
-export const parseBody = (body: string): ParsedResult => {
-  const match = body.match(regexp)?.groups;
 
+export const parseResult = (pullRequest: PullRequest): ParsedResult => {
+  const board_id = parseBoardId(pullRequest.body);
+  const item_id = parseItemId(pullRequest.head.ref);
+  
   return {
-    board_id: match?.board_id ? parseInt(match.board_id) : undefined,
-    item_id: match?.item_id ? parseInt(match.item_id) : undefined,
+    board_id: board_id ? parseInt(board_id) : undefined,
+    item_id: item_id ? parseInt(item_id) : undefined,
   };
+}
+
+const parseBoardId = (body: string): string | undefined => {
+  const match = body.match(boardIdRegexp)?.groups;
+
+  return match?.board_id;
 };
+
+const parseItemId = (branchName: string): string | undefined => {
+  const match = branchName.match(itemIdRegexp)?.groups;
+
+  return match?.item_id;
+}
