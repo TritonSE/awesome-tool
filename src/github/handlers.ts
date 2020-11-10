@@ -75,7 +75,7 @@ export const prHandler = async (context: Context) => {
     }
 
     if (!parsedResult.item_id) {
-      throw new Error('Missing required Monday.com item IDs in Branch name!\n\`<feature/staging/hotfix/...>/[username]/[Monday Item ID]-[3-4 word description separated by dashes]\`');
+      throw new Error('Missing required Monday.com item IDs in Branch name!\nPlease close this PR and submit a new one with your renamed branch, with naming convention: `<feature/staging/hotfix/...>/[username]/[Monday Item ID]-[3-4 word description separated by dashes]`');
     }
 
     let status = 'Code Review';
