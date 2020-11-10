@@ -61,12 +61,7 @@ const updatePRStatus = async (context: Context, commitSha: string, block = false
 
 export const prHandler = async (context: Context) => {
   try {
-    const { changes, pull_request: pullRequest } = context.payload;
-
-    // pull_request.edited: if the pull request's body is not edited, return early
-    if (changes && !changes.body) {
-      return;
-    }
+    const { pull_request: pullRequest } = context.payload;
 
     const parsedResult = parseResult(pullRequest);
 
