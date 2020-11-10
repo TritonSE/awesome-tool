@@ -3,7 +3,7 @@ import { prHandler } from './github/handlers';
 
 export = (app: Application) => {
   app.on(
-    ['pull_request.opened', 'pull_request.edited', 'pull_request.reopened', 'pull_request.closed'],
+    ['pull_request.opened', 'pull_request.edited', 'pull_request.reopened', 'pull_request.closed', 'pull_request.synchronize'],
     prHandler,
   );
 
