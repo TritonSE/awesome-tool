@@ -1,7 +1,10 @@
 {
   "action": "opened",
   "pull_request": {
-    "body": "### Info\r\nMonday Board ID: 785685546\r\nMonday Item ID:123785546\r\n### Changes\r\nWhat changes did you make?\r\n### Testing\r\nHow did you confirm your changes worked? Upload a screenshot, if possible"
+    "body": "### Info\r\nMonday Board ID: 785685546\r\nMonday Item ID:123785546\r\n### Changes\r\nWhat changes did you make?\r\n### Testing\r\nHow did you confirm your changes worked? Upload a screenshot, if possible",
+    "head": {
+      "sha": "ec26c3e57ca3a959ca5aad62de7213c562f8c821"
+    }
   },
   "repository": {
     "name": "awesome-tool",
