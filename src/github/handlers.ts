@@ -53,7 +53,9 @@ const updatePRStatus = async (context: Context, commitSha: string, block = false
       sha: commitSha,
       state: status,
       target_url: APP_URL,
-      description: block ? 'Missing required Monday.com IDs in Branch name or PR body!' : 'Ready to be merged',
+      description: block
+        ? 'Missing required Monday.com IDs in Branch name or PR body!'
+        : 'Ready to be merged',
       context: APP_NAME,
     }),
   );
@@ -70,7 +72,9 @@ export const prHandler = async (context: Context) => {
     }
 
     if (!parsedResult.item_id) {
-      throw new Error('Missing required Monday.com item IDs in Branch name!\nPlease close this PR and submit a new one with your renamed branch, with naming convention: `<feature/staging/hotfix/...>/[username]/[Monday Item ID]-[3-4 word description separated by dashes]`');
+      throw new Error(
+        'Missing required Monday.com item IDs in Branch name!\nPlease close this PR and submit a new one with your renamed branch, with naming convention: `<feature/staging/hotfix/...>/[username]/[Monday Item ID]-[3-4 word description separated by dashes]`',
+      );
     }
 
     let status = 'Code Review';
