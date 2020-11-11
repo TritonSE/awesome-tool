@@ -1,0 +1,12 @@
+{
+  "action": "opened",
+  "pull_request": {
+    "body": "### Info\r\nMonday Board ID: 785685546\r\nMonday Item ID:123785546\r\n### Changes\r\nWhat changes did you make?\r\n### Testing\r\nHow did you confirm your changes worked? Upload a screenshot, if possible"
+  },
+  "repository": {
+    "name": "awesome-tool",
+    "owner": {
+      "login": "c3duan"
+    }
+  }
+}

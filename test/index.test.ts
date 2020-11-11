@@ -6,12 +6,9 @@ import nock from 'nock';
 import myProbotApp from '../src';
 import { Probot, ProbotOctokit } from 'probot';
 // Requiring our fixtures
-import payload from './fixtures/issues.opened.json';
-const issueCreatedBody = { body: 'Thanks for opening this issue!' };
-const fs = require('fs');
-const path = require('path');
-
-const privateKey = fs.readFileSync(path.join(__dirname, 'fixtures/mock-cert.pem'), 'utf-8');
+import payload from './fixtures/pr.opened.json';
+//import { invalidIdsCommentMock } from './fixtures/JSONMocks';
+//import { getColumnsMock } from './fixtures/JSONMocks';
 
 describe('My Probot app', () => {
   let probot: any;
@@ -20,7 +17,7 @@ describe('My Probot app', () => {
     nock.disableNetConnect();
     probot = new Probot({
       id: 123,
-      privateKey,
+      githubToken: 'test',
       // disable request throttling and retries for testing
       Octokit: ProbotOctokit.defaults({
         retry: { enabled: false },
@@ -31,28 +28,31 @@ describe('My Probot app', () => {
     probot.load(myProbotApp);
   });
 
-  test('creates a comment when an issue is opened', async (done) => {
-    const mock = nock('https://api.github.com')
-      // Test that we correctly return a test token
-      .post('/app/installations/2/access_tokens')
+  test('Get Columns Query', async (done) => {
+    const monday_mock = nock('https://api.monday.com/v2')
+      .persist()
+      .post(/.*/, () => {
+        //return done(expect(req).toEqual(getColumnsMock));
+        return done();
+      })
       .reply(200, {
-        token: 'test',
-        permissions: {
-          issues: 'write',
+        query: {
+          id: 1,
         },
-      })
+      });
 
-      // Test that a comment is posted
-      .post('/repos/hiimbex/testing-things/issues/1/comments', (body: any) => {
-        done(expect(body).toMatchObject(issueCreatedBody));
-        return true;
-      })
-      .reply(200);
+    const github_mock = nock('https://api.github.com').persist().post(/.*/).reply(200, {
+      url: 'https://api.github.com/repos/c3duan/awesome-tool/pulls/1',
+      title: 'Testing Suite',
+      body: 'This is a mocked reply from github',
+    });
 
-    // Receive a webhook event
-    await probot.receive({ name: 'issues', payload });
+    await probot.receive({ name: 'pull_request', payload }).catch((err: any) => {
+      console.error(err);
+    });
 
-    expect(mock.pendingMocks()).toStrictEqual([]);
+    expect(monday_mock.pendingMocks()).toBeDefined();
+    expect(github_mock.pendingMocks()).toBeDefined();
   });
 
   afterEach(() => {
