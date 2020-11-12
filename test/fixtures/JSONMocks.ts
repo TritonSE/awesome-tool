@@ -14,6 +14,43 @@ export const getColumnsMock = {
   variables: '{"board_ids":[785685546]}',
 };
 
+export const getItemsResponseMock = {
+  data: {
+    items: [
+      {
+        column_values: [
+          {
+            id: 'person',
+            title: 'Owner',
+            type: 'multiple-person',
+            additional_info: null,
+          },
+          {
+            id: 'status_1',
+            title: 'Status',
+            type: 'color',
+            additional_info:
+              '{"label":"Working on it","color":"#e2445c","changed_at":"2020-11-09T09:35:32.709Z"}',
+          },
+          {
+            id: 'last_updated',
+            title: 'Last Updated',
+            type: 'pulse-updated',
+            additional_info: null,
+          },
+          {
+            id: 'item_id',
+            title: 'Item ID',
+            type: 'pulse-id',
+            additional_info: null,
+          },
+        ],
+      },
+    ],
+  },
+  account_id: 4351600,
+};
+
 /*
 const changeItems = `
 mutation changeItemStatus($board_id: Int!, $item_id: Int!, $column_id: String!, $value: String!) {

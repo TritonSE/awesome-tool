@@ -21,6 +21,7 @@ export const mondayClient = async (query: string, variables?: any): Promise<Resp
   if (response.error) {
     throw new Error(response.error.message);
   }
+  console.log(response);
 
   return response;
 };

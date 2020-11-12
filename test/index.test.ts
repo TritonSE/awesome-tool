@@ -1,7 +1,9 @@
 // You can import your modules
 // import index from '../src/index'
 
-import nock from 'nock';
+//import nock from 'nock';
+import fetchMock, { MockRequest } from 'fetch-mock';
+//import fetchMock from 'fetch-mock-jest';
 // Requiring our app implementation
 import myProbotApp from '../src';
 import { Probot, ProbotOctokit } from 'probot';
@@ -9,12 +11,13 @@ import { Probot, ProbotOctokit } from 'probot';
 import payload from './fixtures/pr.opened.json';
 //import { invalidIdsCommentMock } from './fixtures/JSONMocks';
 //import { getColumnsMock } from './fixtures/JSONMocks';
+import { getItemsResponseMock } from './fixtures/JSONMocks';
 
 describe('My Probot app', () => {
   let probot: any;
 
   beforeEach(() => {
-    nock.disableNetConnect();
+    //nock.disableNetConnect();
     probot = new Probot({
       id: 123,
       githubToken: 'test',
@@ -28,36 +31,41 @@ describe('My Probot app', () => {
     probot.load(myProbotApp);
   });
 
-  test('Get Columns Query', async (done) => {
-    const monday_mock = nock('https://api.monday.com/v2')
-      .persist()
-      .post(/.*/, () => {
-        //return done(expect(req).toEqual(getColumnsMock));
-        return done();
-      })
-      .reply(200, {
-        query: {
-          id: 1,
-        },
-      });
-
-    const github_mock = nock('https://api.github.com').persist().post(/.*/).reply(200, {
-      url: 'https://api.github.com/repos/c3duan/awesome-tool/pulls/1',
-      title: 'Testing Suite',
-      body: 'This is a mocked reply from github',
-    });
+  test('Get Columns Query', async () => {
+    const mondayHeaders = {
+      headers: {
+        'Content-type': 'application/json',
+        Authorization: '1343253',
+      },
+    };
+    fetchMock.mock(
+      (url: string, opts: MockRequest): boolean => {
+        console.log('lskjdgkl;as;ldgjs;lkgj;lkasjdg;lkjs');
+        console.log(
+          Boolean(
+            url === 'https://api.monday.com/v2' &&
+              (opts?.headers as { [key: string]: string | number })?.Authorization,
+          ),
+        );
+        return Boolean(
+          url === 'https://api.monday.com/v2' &&
+            (opts?.headers as { [key: string]: string | number })?.Authorization,
+        );
+      },
+      getItemsResponseMock,
+      mondayHeaders,
+    );
+    //fetchMock.mock(/(https:\/\/api\.github\.com\/repos)(.*)/, { hello: 'world' });
 
     await probot.receive({ name: 'pull_request', payload }).catch((err: any) => {
       console.error(err);
     });
-
-    expect(monday_mock.pendingMocks()).toBeDefined();
-    expect(github_mock.pendingMocks()).toBeDefined();
+    console.log(fetchMock.called());
   });
 
   afterEach(() => {
-    nock.cleanAll();
-    nock.enableNetConnect();
+    //nock.cleanAll();
+    //nock.enableNetConnect();
   });
 });
 
