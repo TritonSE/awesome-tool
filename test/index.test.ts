@@ -8,7 +8,7 @@ import awesomeTool from '../src';
 import { Probot, ProbotOctokit } from 'probot';
 // Requiring our fixtures
 import payload from './fixtures/pr.opened.json';
-import { getItemsResponseMock } from './fixtures/JSONMocks';
+import itemsResponseMock from './fixtures/monday.items.json';
 
 describe('My Probot app', () => {
   let probot: Probot;
@@ -29,23 +29,24 @@ describe('My Probot app', () => {
   });
 
   test('Get Items Query', async () => {
-    fetchMock.mockIf('https://api.monday.com/v2', JSON.stringify(getItemsResponseMock));
+    fetchMock.mockIf('https://api.monday.com/v2', JSON.stringify(itemsResponseMock));
 
-    nock("https://api.github.com")
-      .post("/app/installations/2/access_tokens")
-      .reply(200, { token: "test" });
+    nock('https://api.github.com')
+      .post('/app/installations/2/access_tokens')
+      .reply(200, { token: 'test' });
 
     // Test that a comment is posted
-    nock("https://api.github.com")
-      .post("/repos/hiimbex/testing-things/issues/112/comments")
+    nock('https://api.github.com')
+      .post('/repos/hiimbex/testing-things/issues/112/comments')
       .reply(200);
 
-    nock("https://api.github.com")
+    nock('https://api.github.com')
       .post('/repos/hiimbex/testing-things/statuses/87ade3a8c4e177edbb07d7b682dfea473cad0975')
       .reply(200);
 
-
-    await probot.receive({ id: '1', name: 'pull_request', payload }).catch((e: any) => console.error(e));
+    await probot
+      .receive({ id: '1', name: 'pull_request', payload })
+      .catch((e: any) => console.error(e));
   });
 
   afterEach(() => {
