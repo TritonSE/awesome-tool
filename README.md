@@ -2,7 +2,7 @@
 
 > A GitHub App built with [Probot](https://github.com/probot/probot) that automates the process of synchronizing and managing GitHub PRs with Monday.com tasks.
 
-Built by Triton Software Engineering.
+Built by Triton Software Engineering (TSE).
 
 ## Setup
 
