@@ -1,26 +1,23 @@
-// You can import your modules
-// import index from '../src/index'
-
+//import node-fetch mock for jest
+import fetchMock, { enableFetchMocks } from 'jest-fetch-mock';
+enableFetchMocks();
+//import nock from 'nock';
 import nock from 'nock';
 // Requiring our app implementation
-import myProbotApp from '../src';
+import awesomeTool from '../src';
 import { Probot, ProbotOctokit } from 'probot';
 // Requiring our fixtures
-import payload from './fixtures/issues.opened.json';
-const issueCreatedBody = { body: 'Thanks for opening this issue!' };
-const fs = require('fs');
-const path = require('path');
-
-const privateKey = fs.readFileSync(path.join(__dirname, 'fixtures/mock-cert.pem'), 'utf-8');
+import payload from './fixtures/pr.opened.json';
+import itemsResponseMock from './fixtures/monday.items.json';
 
 describe('My Probot app', () => {
-  let probot: any;
+  let probot: Probot;
 
   beforeEach(() => {
     nock.disableNetConnect();
     probot = new Probot({
       id: 123,
-      privateKey,
+      githubToken: 'test',
       // disable request throttling and retries for testing
       Octokit: ProbotOctokit.defaults({
         retry: { enabled: false },
@@ -28,31 +25,28 @@ describe('My Probot app', () => {
       }),
     });
     // Load our app into probot
-    probot.load(myProbotApp);
+    probot.load(awesomeTool);
   });
 
-  test('creates a comment when an issue is opened', async (done) => {
-    const mock = nock('https://api.github.com')
-      // Test that we correctly return a test token
-      .post('/app/installations/2/access_tokens')
-      .reply(200, {
-        token: 'test',
-        permissions: {
-          issues: 'write',
-        },
-      })
+  test('Get Items Query', async () => {
+    fetchMock.mockIf('https://api.monday.com/v2', JSON.stringify(itemsResponseMock));
 
-      // Test that a comment is posted
-      .post('/repos/hiimbex/testing-things/issues/1/comments', (body: any) => {
-        done(expect(body).toMatchObject(issueCreatedBody));
-        return true;
-      })
+    nock('https://api.github.com')
+      .post('/app/installations/2/access_tokens')
+      .reply(200, { token: 'test' });
+
+    // Test that a comment is posted
+    nock('https://api.github.com')
+      .post('/repos/hiimbex/testing-things/issues/112/comments')
       .reply(200);
 
-    // Receive a webhook event
-    await probot.receive({ name: 'issues', payload });
+    nock('https://api.github.com')
+      .post('/repos/hiimbex/testing-things/statuses/87ade3a8c4e177edbb07d7b682dfea473cad0975')
+      .reply(200);
 
-    expect(mock.pendingMocks()).toStrictEqual([]);
+    await probot
+      .receive({ id: '1', name: 'pull_request', payload })
+      .catch((e: any) => console.error(e));
   });
 
   afterEach(() => {
