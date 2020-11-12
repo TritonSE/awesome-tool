@@ -2,6 +2,8 @@
 
 > A GitHub App built with [Probot](https://github.com/probot/probot) that automates the process of synchronizing and managing GitHub PRs with Monday.com tasks.
 
+Am I crazy?
+
 ## Setup
 
 ```sh
