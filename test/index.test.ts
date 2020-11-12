@@ -1,23 +1,20 @@
-// You can import your modules
-// import index from '../src/index'
-
+//import node-fetch mock for jest
+import fetchMock, { enableFetchMocks } from 'jest-fetch-mock';
+enableFetchMocks();
 //import nock from 'nock';
-import fetchMock, { MockRequest } from 'fetch-mock';
-//import fetchMock from 'fetch-mock-jest';
+import nock from 'nock';
 // Requiring our app implementation
-import myProbotApp from '../src';
+import awesomeTool from '../src';
 import { Probot, ProbotOctokit } from 'probot';
 // Requiring our fixtures
 import payload from './fixtures/pr.opened.json';
-//import { invalidIdsCommentMock } from './fixtures/JSONMocks';
-//import { getColumnsMock } from './fixtures/JSONMocks';
 import { getItemsResponseMock } from './fixtures/JSONMocks';
 
 describe('My Probot app', () => {
-  let probot: any;
+  let probot: Probot;
 
   beforeEach(() => {
-    //nock.disableNetConnect();
+    nock.disableNetConnect();
     probot = new Probot({
       id: 123,
       githubToken: 'test',
@@ -28,44 +25,32 @@ describe('My Probot app', () => {
       }),
     });
     // Load our app into probot
-    probot.load(myProbotApp);
+    probot.load(awesomeTool);
   });
 
-  test('Get Columns Query', async () => {
-    const mondayHeaders = {
-      headers: {
-        'Content-type': 'application/json',
-        Authorization: '1343253',
-      },
-    };
-    fetchMock.mock(
-      (url: string, opts: MockRequest): boolean => {
-        console.log('lskjdgkl;as;ldgjs;lkgj;lkasjdg;lkjs');
-        console.log(
-          Boolean(
-            url === 'https://api.monday.com/v2' &&
-              (opts?.headers as { [key: string]: string | number })?.Authorization,
-          ),
-        );
-        return Boolean(
-          url === 'https://api.monday.com/v2' &&
-            (opts?.headers as { [key: string]: string | number })?.Authorization,
-        );
-      },
-      getItemsResponseMock,
-      mondayHeaders,
-    );
-    //fetchMock.mock(/(https:\/\/api\.github\.com\/repos)(.*)/, { hello: 'world' });
+  test('Get Items Query', async () => {
+    fetchMock.mockIf('https://api.monday.com/v2', JSON.stringify(getItemsResponseMock));
 
-    await probot.receive({ name: 'pull_request', payload }).catch((err: any) => {
-      console.error(err);
-    });
-    console.log(fetchMock.called());
+    nock("https://api.github.com")
+      .post("/app/installations/2/access_tokens")
+      .reply(200, { token: "test" });
+
+    // Test that a comment is posted
+    nock("https://api.github.com")
+      .post("/repos/hiimbex/testing-things/issues/112/comments")
+      .reply(200);
+
+    nock("https://api.github.com")
+      .post('/repos/hiimbex/testing-things/statuses/87ade3a8c4e177edbb07d7b682dfea473cad0975')
+      .reply(200);
+
+
+    await probot.receive({ id: '1', name: 'pull_request', payload }).catch((e: any) => console.error(e));
   });
 
   afterEach(() => {
-    //nock.cleanAll();
-    //nock.enableNetConnect();
+    nock.cleanAll();
+    nock.enableNetConnect();
   });
 });
 
