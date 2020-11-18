@@ -33,7 +33,7 @@
       "type": "User",
       "site_admin": false
     },
-    "body": "### Info\r\nMonday Board ID: 785685546\r\nMonday Item ID:123785546\r\n### Changes\r\nWhat changes did you make?\r\n### Testing\r\nHow did you confirm your changes worked? Upload a screenshot, if possible",
+    "body": "### Administrative Info\r\nMonday Board ID: 785685546\r\nMake sure your branch name conforms to: `<feature/staging/hotfix/...>/[username]/[Monday Item ID]-[3-4 word description separated by dashes]`.\r\nOtherwise, please rename your branch and create a new PR.\r\n\r\n### Changes\r\nWhat changes did you make?\r\n- TODO\r\n\r\n### Testing\r\nHow did you confirm your changes worked?\r\n- TODO\r\n\r\n### Confirmation of Change\r\nUpload a screenshot, if possible. Otherwise, please provide instructions on how to see the change.\r\n\r\n| [TODO Screenshot Title] |\r\n| --- |\r\n| [TODO Screenshot Link] |",
     "created_at": "2018-09-06T01:39:49Z",
     "updated_at": "2018-09-06T01:39:49Z",
     "closed_at": null,
@@ -60,7 +60,7 @@
     "statuses_url": "https://api.github.com/repos/hiimbex/testing-things/statuses/87ade3a8c4e177edbb07d7b682dfea473cad0975",
     "head": {
       "label": "hiimbex:feature/hiimbex/12345678-patch-41",
-      "ref": "feature/hiimbex/12345678-patch-41",
+      "ref": "feature/TestUser/123785546-sample-pr-for-tests",
       "sha": "87ade3a8c4e177edbb07d7b682dfea473cad0975",
       "user": {
         "login": "hiimbex",
